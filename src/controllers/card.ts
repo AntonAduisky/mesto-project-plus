@@ -25,7 +25,12 @@ export const createCard = async (req: Request, res: Response, next: NextFunction
       }
       res.send({ data: card });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(badRequestError(err.message));
+      }
+      return next(err);
+    });
 };
 
 export const deleteCard = async (req: Request, res: Response, next: NextFunction) => {
@@ -43,7 +48,12 @@ export const deleteCard = async (req: Request, res: Response, next: NextFunction
       return CardModel.findByIdAndDelete(cardId);
     })
     .then(() => res.send({ message: 'Карточка удалена' }))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(badRequestError(err.message));
+      }
+      return next(err);
+    });
 };
 
 export const addLike = async (req: Request, res: Response, next: NextFunction) => {

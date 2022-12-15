@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { notFoundError } from '../utils/errors';
+import { badRequestError, notFoundError } from '../utils/errors';
 import UserModel from '../models/user';
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
@@ -16,7 +16,12 @@ export const getUserById = (req: Request, res: Response, next: NextFunction) => 
       }
       res.send({ data: user });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(badRequestError(err.message));
+      }
+      return next(err);
+    });
 };
 
 // реализуем функцию создания пользователя
@@ -25,7 +30,13 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
 
   UserModel.create({ name, about, avatar })
     .then((user) => res.status(200).send({ data: user }))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(badRequestError(err.message));
+      }
+
+      return next(err);
+    });
 };
 
 export const updateUser = (req: Request, res: Response, next: NextFunction) => {
