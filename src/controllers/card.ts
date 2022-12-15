@@ -71,7 +71,12 @@ export const addLike = async (req: Request, res: Response, next: NextFunction) =
     })
   // next будет вызван с аргументом-ошибкой и запрос перейдёт
   // в обработчик ошибки, но уже со статусом и сообщением
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(badRequestError(err.message));
+      }
+      return next(err);
+    });
 };
 
 export const removeLike = async (req: Request, res: Response, next: NextFunction) => {
@@ -86,5 +91,10 @@ export const removeLike = async (req: Request, res: Response, next: NextFunction
       }
       res.send({ data: card });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(badRequestError(err.message));
+      }
+      return next(err);
+    });
 };
