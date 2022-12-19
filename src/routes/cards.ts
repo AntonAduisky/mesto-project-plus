@@ -2,14 +2,15 @@ import { Router } from 'express';
 import {
   getCards, createCard, deleteCard, addLike, removeLike,
 } from '../controllers/card';
+import { cardValidation, idValidation } from '../utils/validation';
 
 const router = Router();
 
 router.get('/', getCards);
-router.post('/', createCard);
-router.delete('/:cardId', deleteCard);
-router.put('/:cardId/likes', addLike);
-router.delete('/:cardId/likes', removeLike);
+router.post('/', cardValidation, createCard);
+router.delete('/:cardId', idValidation, deleteCard);
+router.put('/:cardId/likes', idValidation, addLike);
+router.delete('/:cardId/likes', idValidation, removeLike);
 
 export default router;
 // Маршруты роутера (routes) связывают адрес запроса с функцией контроллера.

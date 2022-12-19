@@ -1,5 +1,6 @@
 import {
-  BAD_REQUEST_ERROR, FORBIDDEN_ERROR, INTERNAL_SERVER_ERROR, NOT_FOUND_ERROR, UNAUTHORIZED_ERROR,
+  BAD_REQUEST_ERROR, ERR_CONFLICT, FORBIDDEN_ERROR,
+  INTERNAL_SERVER_ERROR, NOT_FOUND_ERROR, UNAUTHORIZED_ERROR,
 } from './constants';
 
 export class CustomError extends Error {
@@ -29,4 +30,8 @@ export function forbiddenError(message: string) {
 
 export function internalServerError(message: string) {
   return new CustomError(INTERNAL_SERVER_ERROR, message);
+}
+
+export function conflictError(message: string) {
+  return new CustomError(ERR_CONFLICT, message);
 }
