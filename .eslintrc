@@ -41,6 +41,8 @@
         "no-underscore-dangle": ["error", { "allow": ["_id"]}],
         "no-console":"off",
         "import/prefer-f-default-export": "off",
-        "eslint no-useless-escape": "off"
+        "eslint no-useless-escape": "off",
+        "consistent-return": "off",
+        "no-useless-escape": "off"
     }
   }
