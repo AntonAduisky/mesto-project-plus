@@ -2,9 +2,12 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { errors } from 'celebrate';
+import { errorLogger, requestLogger } from './middlewares/logger';
+import { createUser, login } from './controllers/user';
 import errorHandler from './middlewares/error-handler';
 import auth from './middlewares/auth';
 import router from './routes'; // импортируем роутер
+import { signinValidation, signupValidation } from './utils/validation';
 
 // для чтения переменных из файла .env
 dotenv.config();
@@ -21,15 +24,21 @@ mongoose
   .catch((err) => console.log('DB error', err));
 
 const app = express();
-
-// метод, встроенный в экспресс, для распознавания входящего объекта запроса как объекта JSON
-app.use(express.json());
 // встроенный в выражение метод для распознавания входящего объекта запроса как строки или массива
 app.use(express.urlencoded({ extended: true }));
+// метод, встроенный в экспресс, для распознавания входящего объекта запроса как объекта JSON
+app.use(express.json());
+
+app.use(requestLogger);
+
+app.post('/signin', signinValidation, login);
+app.post('/signup', signupValidation, createUser);
 
 app.use(auth);
 
 app.use(NAME_API, router); // запускаем роутер
+
+app.use(errorLogger);
 
 app.use(errors());
 
