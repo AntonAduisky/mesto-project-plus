@@ -1,7 +1,9 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
 import { errors } from 'celebrate';
+import apiLimiter from './middlewares/rate-limiter';
 import { errorLogger, requestLogger } from './middlewares/logger';
 import { createUser, login } from './controllers/user';
 import errorHandler from './middlewares/error-handler';
@@ -24,13 +26,16 @@ mongoose
   .catch((err) => console.log('DB error', err));
 
 const app = express();
+// для простановки security-заголовков
+app.use(helmet());
 // встроенный в выражение метод для распознавания входящего объекта запроса как строки или массива
 app.use(express.urlencoded({ extended: true }));
 // метод, встроенный в экспресс, для распознавания входящего объекта запроса как объекта JSON
 app.use(express.json());
 
 app.use(requestLogger);
-
+// для ограничения кол-во запросов
+app.use(apiLimiter);
 app.post('/signin', signinValidation, login);
 app.post('/signup', signupValidation, createUser);
 

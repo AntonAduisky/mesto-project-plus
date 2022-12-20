@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { celebrate, Joi } from 'celebrate';
 import { URL_REGEXP } from './constants';
-import { notFoundError } from './errors';
+import { badRequestError } from './errors';
 
 export const cardValidation = celebrate({
   body: Joi.object().keys({
@@ -16,7 +16,7 @@ export const cardValidation = celebrate({
 export const idValidation = (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   if (Types.ObjectId.isValid(id)) {
-    throw notFoundError('Некорректный ID');
+    throw badRequestError('Некорректный ID');
   }
   next();
 };

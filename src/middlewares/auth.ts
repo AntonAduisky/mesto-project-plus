@@ -7,6 +7,7 @@ const extractBearerToken = (header: string) => header.replace('Bearer ', '');
 
 export default (req: ISessionRequest, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
+  const { JWT_SECRET = 'super-secret-key' } = process.env;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return unauthorizedError('Необходима авторизация');
@@ -16,7 +17,7 @@ export default (req: ISessionRequest, res: Response, next: NextFunction) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'super-secret-key');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return unauthorizedError('Проблемы с токеном');
   }
