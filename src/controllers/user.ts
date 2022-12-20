@@ -107,10 +107,11 @@ export const updateAvatar = async (req: ISessionRequestAuth, res: Response, next
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
+  const { JWT_SECRET = 'super-secret-key' } = process.env;
 
   await UserModel.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'super-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.send({ token });
     })
     .catch(next);
